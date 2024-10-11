@@ -1,0 +1,90 @@
+线程同步的核心思想是：在一个时间点上，只允许一个线程访问共享资源，其他线程需要等待该线程完成对资源的操作后才能继续。
+1. synchronized 关键字：
+synchronized 是 Java 中最常用的同步机制，它可以用来确保某个线程在访问共享资源时，其他线程无法同时访问该资源。
+
+a) 同步实例方法：
+当一个线程访问一个对象的同步实例方法时，其他线程无法访问这个对象的任何其他同步方法。它锁定的是对象实例。
+
+示例：
+class Counter {
+    private int count = 0;
+
+    // synchronized 关键字确保每次只有一个线程可以执行此方法
+    public synchronized void increment() {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class SyncMethodExample {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+        
+        // 创建两个线程，并让它们并发执行
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        t1.start();
+        t2.start();
+        
+        t1.join();
+        t2.join();
+        
+        System.out.println("最终计数值: " + counter.getCount());  // 期望值为 2000
+    }
+}
+解释：
+
+synchronized 关键字确保同一时刻只能有一个线程执行 increment() 方法。即使有多个线程同时访问这个方法，synchronized 也保证了共享数据 count 的一致性。
+在上面的例子中，如果没有 synchronized，多个线程可能会同时修改 count，导致最终的计数结果不正确。
+b) 同步代码块：
+有时你不需要整个方法都同步，而是只需要同步其中的某一部分代码。在这种情况下，可以使用同步代码块：
+
+示例：
+class Counter {
+    private int count = 0;
+
+    public void increment() {
+        // 同步代码块，锁定当前对象
+        synchronized (this) {
+            count++;
+        }
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+解释：
+
+synchronized (this) 表示锁定当前对象，确保代码块中的操作在同一时刻只被一个线程访问。
+
+c) 静态同步方法：
+静态同步方法锁定的是 类对象，而不是实例对象。这样，当一个线程访问类的同步静态方法时，其他线程无法访问类的任何其他同步静态方法。
+
+示例：
+class Counter {
+    private static int count = 0;
+
+    public static synchronized void increment() {
+        count++;
+    }
+
+    public static int getCount() {
+        return count;
+    }
+}
+解释：
+静态同步方法通过锁定整个类，确保只有一个线程能访问类的静态资源
