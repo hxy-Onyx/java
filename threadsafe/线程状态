@@ -1,0 +1,138 @@
+1.New（新建状态）：
+当一个线程对象被创建但尚未启动时，它处于 New 状态。
+线程还没有调用 start() 方法，因此并没有真正开始执行。
+
+示例：
+Thread t = new Thread(() -> {
+    System.out.println("线程运行中...");
+});
+// 线程处于新建状态
+-----------------
+2.Runnable（就绪状态/运行状态）：
+线程调用了 start() 方法，进入了 Runnable 状态。
+在这个状态下，线程准备好被操作系统调度执行，可能已经在运行，也可能等待 CPU 时间片。
+Java 线程调度依赖操作系统，因此线程是否立即执行取决于底层系统。
+示例：
+t.start(); // 线程处于 Runnable 状态（就绪或运行）
+-----------------
+3.Blocked（阻塞状态）：
+Blocked 状态表示线程在等待一个锁（例如，某个同步代码块或方法的锁）。
+线程在进入临界区前必须获得锁，如果其他线程持有该锁，则该线程将进入阻塞状态，等待锁释放。
+示例：
+synchronized (lock) {
+    // 其他线程会在这里被阻塞，直到获得这个锁
+}
+-----------------
+4.Waiting（等待状态）：
+Waiting 状态表示线程在等待另一个线程的通知，通常由 Object.wait()、Thread.join()、或 LockSupport.park() 方法引发。
+线程在这个状态下不会主动获取 CPU 时间片，而是被动等待其他线程的通知（例如使用 notify() 或 notifyAll()）。
+示例：
+synchronized (lock) {
+    lock.wait(); // 线程进入 Waiting 状态，等待被其他线程唤醒
+}
+---------------
+5.Timed Waiting（计时等待状态）：
+Timed Waiting 是类似于 Waiting 的状态，但它有时间限制，线程在等待一定时间后会自动被唤醒。
+这个状态通常由 Thread.sleep()、Object.wait(long timeout)、Thread.join(long millis)、或 LockSupport.parkNanos() 触发。
+示例：
+Thread.sleep(1000); // 线程处于 Timed Waiting 状态，等待 1 秒
+---------------
+6.Terminated（终止状态）：
+当线程的 run() 方法执行完毕或者因未捕获的异常终止时，线程进入 Terminated 状态。
+线程在该状态下已经完全结束，不能再重新启动。
+示例：
+public void run() {
+    System.out.println("线程结束");
+}
+// 线程执行完 run() 后，处于 Terminated 状态
+
+线程状态的转换：
+以下是线程在其生命周期中常见的状态转换：
+
+New → Runnable：当调用 start() 方法时。
+Runnable → Blocked：当线程试图获取一个被其他线程持有的锁时。
+Runnable → Waiting / Timed Waiting：当线程调用 wait()、sleep() 或 join() 等方法时。
+Waiting / Timed Waiting → Runnable：当等待时间结束，或线程被其他线程唤醒时（notify()、notifyAll()、interrupt()）。
+Runnable → Terminated：当线程的任务完成，或者因异常退出时。
+线程状态图：
+            +---------+     
+            |  New    |     
+            +---------+     
+                 |         
+          start() |         
+                 v         
+            +---------+     
+            | Runnable| <------------+
+            +---------+              |
+                 |                   |
+          Running / Waiting    acquire lock
+                 |                   |
+            +---------+        +---------+
+            | Waiting | <------| Blocked |     
+            +---------+        +---------+
+                 |                   |
+          notified |            lock released
+                 v                   |
+            +---------+              |
+            | Terminated| <----------+
+            +---------+
+总结：
+New：线程对象已创建但未启动。
+Runnable：线程已启动，正在等待 CPU 时间片或正在执行。
+Blocked：线程等待进入临界区，无法执行。
+Waiting：线程在等待另一个线程的通知。
+Timed Waiting：线程等待特定的时间后将被唤醒。
+Terminated：线程已完成执行，进入终止状态。
+
+
+--------------------
+
+疑惑：线程运行时都是按顺序进行的吗，每一步都会经历吗
+1.解答：并不一定要严格执行，它可能直接从 Runnable 状态运行到 Terminated 状态，而不进入 Blocked、Waiting 或 Timed Waiting 状态。
+New（新建状态）：
+线程被创建后会处于 New 状态，只有当调用 start() 方法后，线程才会进入 Runnable 状态。
+
+Runnable（就绪或运行状态）：
+当线程调用 start() 后，进入 Runnable 状态。此时，线程可能正在执行，也可能等待系统分配 CPU 时间片。
+线程在 Runnable 状态下并不会一定获取到 CPU。调度机制由操作系统决定，多个线程可能会交替执行。
+
+Blocked（阻塞状态）：
+线程并不总是会进入 Blocked 状态。只有当线程试图进入某个被其他线程持有的锁时，它才会进入 Blocked 状态。
+如果线程不需要获取锁或同步资源，就不会进入 Blocked 状态。
+
+Waiting（等待状态） 和 Timed Waiting（计时等待状态）：
+线程也不一定会进入 Waiting 或 Timed Waiting 状态。只有当线程主动调用某些方法（如 wait()、sleep()、join() 等）时，才会进入这些状态。
+线程可以直接从 Runnable 状态运行到 Terminated 状态，而不经历等待状态。
+
+Terminated（终止状态）：
+所有线程最终都会进入 Terminated 状态，这是线程生命周期的最后一个阶段。
+当 run() 方法执行完毕或者未捕获的异常终止线程时，线程将进入 Terminated 状态。
+
+2.举例：
+class MyThread extends Thread {
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " 运行中");
+        try {
+            Thread.sleep(2000); // 进入 Timed Waiting 状态
+        } catch (InterruptedException e) {
+            System.out.println(Thread.currentThread().getName() + " 被中断");
+        }
+        System.out.println(Thread.currentThread().getName() + " 执行完毕");
+    }
+}
+
+public class ThreadStateExample {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new MyThread();
+        System.out.println("线程状态: " + t1.getState()); // New 状态
+
+        t1.start();
+        System.out.println("线程状态: " + t1.getState()); // Runnable 状态
+
+        Thread.sleep(100); // 等待 t1 线程进入睡眠
+        System.out.println("线程状态: " + t1.getState()); // Timed Waiting 状态
+
+        t1.join(); // 等待 t1 完成
+        System.out.println("线程状态: " + t1.getState()); // Terminated 状态
+    }
+}
