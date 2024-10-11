@@ -1,0 +1,44 @@
+public class sellticket {
+    public static void main(String[] args) {
+        sell03 s=new sell03();
+        Thread t1=new Thread(s);
+        Thread t2=new Thread(s);
+        Thread t3=new Thread(s);
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
+
+class sell03 implements Runnable{
+        int ticket=0;
+        boolean loop =true;
+/*
+1.不能直接在run方法进行同步互斥：就会发生只有一个线程进入循环，直到循环结束
+2.现在需要互斥，同时又要循环互斥的内容：可以讲互斥的内容放到一个新方法内，循环使用方法
+3.循环方法不能使用true，会造成死循环
+ */
+    @Override
+    public void run() {
+        while(loop){
+            m2();
+        }
+    }
+
+    public void m2(){
+        System.out.println("窗口"+Thread.currentThread().getName()+
+                "当前票数"+(++ticket)+"剩余票数"+(100-ticket));
+
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        if(ticket>=100){
+            System.out.println("售票结束");
+            loop=false;
+            return;
+        }
+    }
+}
