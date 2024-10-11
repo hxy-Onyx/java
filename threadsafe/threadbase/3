@@ -1,0 +1,48 @@
+public class thread03 {
+    public static void main(String[] args) {
+        t1 t1=new t1();
+        t2 t2=new t2();
+        Thread t3=new Thread(t2);
+        t1.start();
+        t3.start();
+
+    }
+}
+
+class t1 extends Thread{
+    int num=0;
+    @Override
+    public void run(){
+        while(true){
+            System.out.println("hello,world"+(++num)+"线程名称叫做"+Thread.currentThread().getName());
+            try {
+                    Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+            }
+            if (num==10){
+                System.out.println("hello，world执行结束");
+                break;
+            }
+        }
+    }
+}
+
+class t2 implements Runnable{
+int num=0;
+    @Override
+    public void run() {
+        while(true){
+            System.out.println("hi"+(++num)+"线程名称叫做"+Thread.currentThread().getName());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if (num==5){
+                System.out.println("t2执行结束");
+            break;
+            }
+        }
+    }
+}
