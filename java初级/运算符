@@ -1,1 +1,83 @@
+1. 算术运算符
++	加法	5 + 2	7
+-	减法	5 - 2	3
+*	乘法	5 * 2	10
+/	除法	5 / 2	2（整数除法）
+%	取模（余数）	5 % 2	1
+示例：
+int a = 10;
+int b = 3;
+System.out.println(a + b);  // 输出：13
+System.out.println(a - b);  // 输出：7
+System.out.println(a * b);  // 输出：30
+System.out.println(a / b);  // 输出：3（整数除法）
+System.out.println(a % b);  // 输出：1
+---------------------------------------------------------------
+2. 关系运算符（Relational Operators）
+==	等于	5 == 5	true
+!=	不等于	5 != 2	true
+>	大于	5 > 2	true
+<	小于	5 < 2	false
+>=	大于或等于	5 >= 2	true
+<=	小于或等于	5 <= 2	false
+示例：
+int x = 5;
+int y = 10;
+System.out.println(x == y);   // 输出：false
+System.out.println(x != y);   // 输出：true
+System.out.println(x > y);    // 输出：false
+System.out.println(x < y);    // 输出：true
+System.out.println(x >= 5);   // 输出：true
+System.out.println(y <= 10);  // 输出：true
+---------------------------------------------------------
+3. 逻辑运算符
+&&	逻辑与（AND）	true && false	false
+`		`	逻辑或（OR）
+!	逻辑非（NOT）	!true	false
+&&（逻辑与）：只有当两个操作数都为 true 时，结果才为 true。
+||（逻辑或）：只要有一个操作数为 true，结果就为 true。
+!（逻辑非）：用于取反，将 true 变为 false，将 false 变为 true。
 
+示例：
+boolean a = true;
+boolean b = false;
+System.out.println(a && b);  // 输出：false
+System.out.println(a || b);  // 输出：true
+System.out.println(!a);      // 输出：false
+--------------------------------------------------------------------------
+4. 赋值运算符
+=	赋值	x = 5	x = 5
++=	加后赋值	x += 3	x = x + 3
+-=	减后赋值	x -= 2	x = x - 2
+*=	乘后赋值	x *= 4	x = x * 4
+/=	除后赋值	x /= 2	x = x / 2
+%=	取模后赋值	x %= 3	x = x % 3
+示例：
+int a = 10;
+a += 5;  // 等效于 a = a + 5
+System.out.println(a);  // 输出：15
+a *= 2;  // 等效于 a = a * 2
+System.out.println(a);  // 输出：30
+---------------------------------------------------------------
+5. 自增和自减运算符
+++	自增（加 1）	x++ 或 ++x	x + 1
+--	自减（减 1）	x-- 或 --x	x - 1
+前缀（++x 或 --x）：先进行自增或自减运算，再使用这个变量的值。
+后缀（x++ 或 x--）：先使用变量的当前值，再进行自增或自减运算。
+示例：
+int a = 5;
+System.out.println(++a);  // 前缀自增，先加1，输出：6
+System.out.println(a++);  // 后缀自增，先输出再加1，输出：6，a 变为 7
+System.out.println(a);    // 输出：7
+------------------------------------------------------------------
+6. 三元运算符
+语法：
+condition ? value1 : value2
+condition：条件表达式，结果为 true 或 false。
+value1：如果条件为 true，则返回的值。
+value2：如果条件为 false，则返回的值。
+示例：
+int x = 10;
+int y = 20;
+int max = (x > y) ? x : y;  // 如果 x > y 为真，返回 x，否则返回 y
+System.out.println("Max value: " + max);  // 输出：20
