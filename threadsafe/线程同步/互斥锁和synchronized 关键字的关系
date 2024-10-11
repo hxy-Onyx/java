@@ -1,0 +1,147 @@
+synchronized 和 互斥锁（Mutual Exclusion Lock，简称 Mutex）在 Java 线程同步中是紧密相关的。可以说，synchronized 是 Java 中提供的内置机制来实现互斥锁的功能。它们的关系可以通过以下几个方面来理解：
+
+1. 互斥锁的定义：
+互斥锁（Mutex）是并发编程中一种用于 保证同一时刻只能有一个线程访问共享资源 的机制。互斥锁的核心思想是：
+
+当一个线程获取了锁，其他尝试获取该锁的线程将被阻塞，直到锁被释放。
+互斥锁可以防止多个线程同时对共享资源进行操作，从而避免出现数据不一致的情况。
+2. synchronized 的作用：
+在 Java 中，synchronized 是一种用来保护临界区（即共享资源）的机制，它确保了某个线程执行同步代码块时，其他线程无法同时访问受保护的资源。
+
+synchronized 实现互斥锁的功能，具体体现在：
+
+当一个线程进入被 synchronized 修饰的方法或代码块时，它获取了锁，其他试图进入该方法或代码块的线程将被阻塞，直到锁被释放。
+synchronized 关键字背后使用的就是一种隐式的互斥锁机制。
+3. synchronized 与互斥锁的关系：
+synchronized 实现了互斥锁的功能。每当一个线程进入 synchronized 方法或代码块时，它会获取到一个互斥锁（或称为监视器锁），确保没有其他线程能够同时执行这个同步块。
+
+synchronized 关键字可以用在实例方法、静态方法、或者代码块上，分别锁定 对象级别 或 类级别 的资源。
+
+对象锁：使用 synchronized(this) 或同步实例方法时，锁定的是当前对象的实例。
+类锁：使用 synchronized(类.class) 或同步静态方法时，锁定的是整个类对象。
+4. synchronized 是一种隐式互斥锁：
+Java 中的 synchronized 是隐式的，即开发者不需要手动创建或管理锁。系统会自动处理锁的获取和释放，这也是 synchronized 的简单和方便之处。
+
+获取锁：当线程进入 synchronized 方法或代码块时，自动获取锁。
+释放锁：当线程从 synchronized 方法或代码块退出时，无论是正常退出还是抛出异常，锁都会自动释放。
+示例代码（使用 synchronized 实现互斥锁）：
+java
+复制代码
+class Counter {
+    private int count = 0;
+
+    // 通过 synchronized 关键字，保证同一时刻只有一个线程能访问这个方法
+    public synchronized void increment() {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class SynchronizedExample {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        // 创建两个线程同时操作 counter 对象
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        // 确保多个线程的操作互斥，最后的 count 结果应该为 2000
+        System.out.println("最终计数值: " + counter.getCount());
+    }
+}
+解释：
+
+increment() 方法是 synchronized 的，保证了同一时间只有一个线程可以执行这个方法，其他线程在等待锁。
+这里的锁是隐式的，锁定的是 Counter 对象本身。当一个线程执行 increment() 方法时，其他线程必须等待，直到这个线程释放锁。
+5. ReentrantLock 和显式互斥锁：
+ReentrantLock 是 Java 中的显式锁，它与 synchronized 类似，也提供了互斥锁的功能。不过，它提供了更多控制机制，如尝试获取锁、可中断的锁等待等。
+
+显式互斥锁（ReentrantLock）的例子：
+
+java
+复制代码
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+class Counter {
+    private int count = 0;
+    private final Lock lock = new ReentrantLock();  // 显式的互斥锁
+
+    public void increment() {
+        lock.lock();  // 获取锁
+        try {
+            count++;
+        } finally {
+            lock.unlock();  // 确保锁最终被释放
+        }
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class ReentrantLockExample {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("最终计数值: " + counter.getCount());
+    }
+}
+ReentrantLock 的特点：
+
+它是显式的互斥锁，开发者需要手动获取和释放锁（lock() 和 unlock()）。
+可以更灵活地控制锁定逻辑，例如支持中断、尝试获取锁等。
+6. synchronized 和互斥锁的区别：
+虽然 synchronized 实现了互斥锁的功能，但与 ReentrantLock 这样的显式锁相比，存在以下区别：
+
+特性	synchronized	ReentrantLock
+锁类型	隐式锁	显式锁
+获取锁的方式	自动（由 JVM 处理）	手动调用 lock() 方法
+释放锁的方式	自动（方法/代码块执行完毕后自动释放）	手动调用 unlock() 释放
+公平锁支持	不支持	可以选择公平锁（通过构造函数）
+可重入性	支持	支持
+中断锁等待	不支持	支持
+尝试获取锁	不支持	支持 tryLock() 方法
+条件变量支持（Condition）	不支持	支持
+总结：
+synchronized 是 Java 中的内置机制，用来实现 互斥锁 的功能。它通过隐式的锁管理，同步对共享资源的访问，确保线程安全。
+互斥锁 是并发编程中的一个通用概念，synchronized 是它的一种实现，而 显式锁（如 ReentrantLock）提供了更加灵活的锁控制方式。
+synchronized 简单易用，但控制较少，而 ReentrantLock 提供更多高级特性，如尝试锁定、中断等待等。
+你可以根据实际场景选择合适的同步方式。对于简单的线程同步，synchronized 是很好的选择。如果需要更多控制，则可以使用 ReentrantLock。
