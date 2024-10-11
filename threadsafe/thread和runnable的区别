@@ -1,0 +1,76 @@
+//结果没有什么不同？？？？？？？？？
+
+/*
+使用两种方式卖100张票
+ */
+public class sellticket {
+    public static void main(String[] args) {
+
+        /*
+         //测试，当继承Tread时多线程同时访问同一数据会发生什么
+        sellticket01 s1 =new sellticket01();
+        sellticket01 s2=new sellticket01();
+        sellticket01 s3=new sellticket01();
+        s1.start();
+        s2.start();
+        s3.start();
+         */
+
+
+
+      /*
+      //测试，当外接runnable接口时多线程同时访问同一数据会发生什么
+        sellticket02 s4= new sellticket02();
+        Thread t1=new Thread(s4);
+        Thread t2=new Thread(s4);
+        Thread t3=new Thread(s4);
+        t1.start();
+        t2.start();
+        t3.start();
+
+       */
+    }
+
+}
+
+class sellticket01 extends Thread{
+    private static  int ticket=0;
+    public void run(){
+        while(true){
+            System.out.println("窗口"+Thread.currentThread().getName()+
+                    "当前票数"+(++ticket)+"剩余票数"+(100-ticket));
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(ticket>100){
+                System.out.println("售票结束");
+                break;
+            }
+        }
+    }
+}
+class sellticket02 implements Runnable{
+    private static int ticket=0;
+    @Override
+    public void run() {
+        while(true){
+            System.out.println("窗口"+Thread.currentThread().getName()+
+                    "当前票数"+(++ticket)+"剩余票数"+(100-ticket));
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(ticket>100){
+                System.out.println("售票结束");
+                break;
+            }
+        }
+    }
+}
