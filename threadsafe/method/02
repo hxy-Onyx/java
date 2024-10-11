@@ -1,0 +1,91 @@
+yiled和join的方法
+
+1. yield() 方法
+功能:
+yield() 是一个静态方法，由当前正在执行的线程调用，用于提示线程调度器当前线程愿意让出 CPU 执行权。调用 yield() 后，线程进入就绪状态 (Runnable)，等待线程调度器重新调度。它的目的是给其他同等优先级的线程一个执行机会。
+
+特点:
+不会阻塞线程：线程调用 yield() 后，不会进入阻塞状态，只是从“运行状态”变成“就绪状态”，依然可以被重新调度。
+调度器决定是否重新执行：调用 yield() 并不意味着当前线程会立即被切换，有可能调度器依然选择让当前线程继续执行。
+对线程的优先级敏感：在某些情况下，优先级高的线程可能会继续执行，而优先级低的线程可能会被推迟。
+
+示例:
+class YieldExample extends Thread {
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " in control");
+            // 调用yield方法，当前线程会让出执行权
+            Thread.yield();
+        }
+    }
+
+    public static void main(String[] args) {
+        YieldExample t1 = new YieldExample();
+        YieldExample t2 = new YieldExample();
+        t1.start();
+        t2.start();
+    }
+}
+在这个示例中，两个线程 t1 和 t2 会交替执行，因为 yield() 方法让它们释放了执行权，但具体谁会继续执行则由调度器决定。
+
+使用场景:
+当一个线程在执行时需要暂时让出 CPU，允许其他同级别或更高优先级的线程运行时，使用 yield()。
+在调试或优化线程执行顺序时，可能会临时使用 yield() 来观察其他线程的执行效果。
+
+
+2. join() 方法
+功能:
+join() 方法用于等待另一个线程执行完成。调用线程会进入 阻塞状态，直到被调用的线程执行完毕。简而言之，join() 方法确保线程的执行顺序：当前线程会等待调用 join() 的线程完成之后再继续执行。
+
+特点:
+线程同步工具：join() 是一种线程同步机制，用于确保某个线程在另一个线程完成之前不会执行。
+可以指定等待时间：join(long millis) 方法可以指定等待时间，超过时间后即使线程未结束，调用线程也会继续执行。
+
+示例:
+class JoinExample extends Thread {
+    public void run() {
+        for (int i = 0; i < 3; i++) {
+            System.out.println(Thread.currentThread().getName() + " is running");
+            try {
+                Thread.sleep(1000);  // 每次循环暂停1秒
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        JoinExample t1 = new JoinExample();
+        JoinExample t2 = new JoinExample();
+        t1.start();
+        
+        try {
+            t1.join();  // main线程等待t1完成
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        t2.start();  // t1完成后再启动t2
+    }
+}
+在这个示例中，main 线程会等待 t1 执行完成后才会开始执行 t2。即使 t1 线程要耗费 3 秒，main 线程会一直等待。
+
+使用场景:
+当一个线程必须等另一个线程的结果才能继续执行时，比如需要多个线程完成某个任务之后进行汇总操作。
+在处理线程依赖关系时，可以使用 join() 方法确保顺序执行。
+yield() 和 join() 的区别
+功能不同：
+
+yield()：让当前线程暂时让出 CPU 执行权，并且可以让其他同等优先级的线程有机会运行，但当前线程仍然可能会继续执行。
+join()：使调用线程等待，直到目标线程执行完毕后才能继续运行。
+执行结果：
+
+yield()：只是建议调度器让出 CPU，不能保证线程的执行顺序。
+join()：明确控制线程执行顺序，确保调用线程在目标线程完成后继续。
+使用场景：
+
+yield()：用于让出当前线程的执行权，在优化线程调度时使用。
+join()：用于线程之间的同步，确保某个线程执行完后再继续其他线程。
+总结
+使用 yield() 可以让出 CPU 执行权，但并不保证其他线程一定会获得执行权。
+使用 join() 可以控制线程的执行顺序，使一个线程等待另一个线程完成后再继续执行。
