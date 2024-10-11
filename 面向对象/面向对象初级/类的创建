@@ -1,0 +1,14 @@
+根据需求定义类名、属性、方法
+public class dog{
+int age;
+public void eat(){
+  sout("吃饭")
+}
+}
+注意点：
+访问修饰符
+属性
+方法
+方法块
+构造器
+
