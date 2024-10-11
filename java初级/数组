@@ -1,1 +1,142 @@
+1. 数组的定义
+数组的声明：
+数据类型[] 数组名称;  // 推荐的声明方式
+或者：
+数据类型 数组名称[];  // 这种方式也可以，但不推荐
+示例：
+int[] numbers;  // 声明一个整型数组
+String[] names; // 声明一个字符串数组
+此时数组还未分配内存空间，只是声明了一个数组变量。
 
+2. 数组的创建与初始化
+数组的创建：
+int[] numbers = new int[5];  // 创建一个包含 5 个 int 类型元素的数组
+String[] names = new String[3];  // 创建一个包含 3 个字符串的数组
+默认值：
+数值类型（如 int、float、double），默认值是 0。
+boolean 类型，默认值是 false。
+引用类型（如 String），默认值是 null。
+-----------------
+静态初始化（在创建时直接赋值）：
+int[] numbers = {1, 2, 3, 4, 5};  // 创建数组并赋值
+String[] names = {"Alice", "Bob", "Charlie"};  // 创建字符串数组并赋值
+动态初始化（先创建数组，再逐个赋值）：
+int[] numbers = new int[3];  // 创建一个长度为 3 的数组
+numbers[0] = 10;  // 为数组的第一个元素赋值
+numbers[1] = 20;  // 为数组的第二个元素赋值
+numbers[2] = 30;  // 为数组的第三个元素赋值
+
+3. 访问数组元素
+int[] numbers = {10, 20, 30, 40, 50};
+System.out.println(numbers[0]);  // 输出第一个元素：10
+System.out.println(numbers[4]);  // 输出最后一个元素：50
+
+numbers[2] = 100;  // 修改第三个元素的值
+System.out.println(numbers[2]);  // 输出修改后的值：100
+数组的边界：
+访问数组时，如果使用了超出数组范围的索引，会抛出 ArrayIndexOutOfBoundsException 异常。例如：
+int[] numbers = {10, 20, 30};
+System.out.println(numbers[3]);  // 错误：数组越界，索引最大为 2
+
+4. 数组的长度
+数组的长度是固定的，在创建时指定。可以使用 length 属性获取数组的长度。
+int[] numbers = {10, 20, 30, 40, 50};
+System.out.println(numbers.length);  // 输出数组的长度：5
+使用 length 属性可以用于遍历数组时避免越界。
+
+遍历数组：
+使用 for 循环遍历数组：
+int[] numbers = {10, 20, 30, 40, 50};
+
+for (int i = 0; i < numbers.length; i++) {
+    System.out.println(numbers[i]);
+}
+
+使用 增强型 for 循环（Java 的简化语法）：
+for (int num : numbers) {
+    System.out.println(num);
+}
+
+5. 多维数组
+二维数组的声明与创建：
+int[][] matrix = new int[3][4];  // 创建一个 3 行 4 列的二维数组
+二维数组的初始化：
+int[][] matrix = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};  // 创建并初始化一个 3x4 的二维数组
+访问二维数组元素：
+int[][] matrix = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};
+System.out.println(matrix[0][0]);  // 输出第一行第一列的元素：1
+System.out.println(matrix[2][3]);  // 输出第三行第四列的元素：12
+遍历二维数组：
+
+int[][] matrix = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};
+
+for (int i = 0; i < matrix.length; i++) {         // 遍历行
+    for (int j = 0; j < matrix[i].length; j++) {  // 遍历列
+        System.out.print(matrix[i][j] + " ");
+    }
+    System.out.println();  // 换行
+}
+6. 数组的常见操作
+a) 数组排序：
+Java 提供了 Arrays 类，可以对数组进行常见操作，如排序、搜索等。
+
+排序：使用 Arrays.sort() 方法对数组进行排序。
+import java.util.Arrays;
+int[] numbers = {5, 2, 9, 1, 6};
+Arrays.sort(numbers);  // 对数组进行升序排序
+System.out.println(Arrays.toString(numbers));  // 输出：[1, 2, 5, 6, 9]
+
+b) 数组搜索：
+可以使用 Arrays.binarySearch() 方法在已排序的数组中查找元素。
+import java.util.Arrays;
+
+int[] numbers = {1, 2, 5, 6, 9};
+int index = Arrays.binarySearch(numbers, 5);  // 搜索数字 5 在数组中的索引
+System.out.println(index);  // 输出：2
+
+c) 数组复制：
+使用 Arrays.copyOf() 可以复制数组或截取部分数组。
+import java.util.Arrays;
+
+int[] original = {1, 2, 3, 4, 5};
+int[] copy = Arrays.copyOf(original, 3);  // 复制前 3 个元素
+System.out.println(Arrays.toString(copy));  // 输出：[1, 2, 3]
+
+7. 常见的数组相关问题
+a) 数组越界
+如果尝试访问的数组索引超出了合法范围，就会抛出 ArrayIndexOutOfBoundsException 异常。确保访问数组时，索引总是小于 length。
+
+b) 数组的初始值
+数组的元素在创建时会被自动初始化为默认值：
+
+数值类型的数组（int、double 等）默认值为 0。
+布尔类型数组的默认值为 false。
+引用类型数组（如 String）的默认值为 null。
+
+8. 数组作为方法参数
+数组可以作为方法的参数传递。在 Java 中，数组是引用类型，所以当数组作为参数传递时，方法接收到的是数组的引用。
+
+示例：
+public class ArrayTest {
+    public static void main(String[] args) {
+        int[] numbers = {1, 2, 3, 4, 5};
+        modifyArray(numbers);  // 传递数组
+        System.out.println(Arrays.toString(numbers));  // 输出：[1, 2, 3, 10, 5]
+    }
+
+    public static void modifyArray(int[] arr) {
+        arr[3] = 10;  // 修改数组的第四个元素
+    }
+}
