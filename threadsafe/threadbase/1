@@ -1,0 +1,26 @@
+public class thread01 {
+    public static void main(String[] args) {
+        cat c=new cat();
+        c.start();
+    }
+}
+
+class cat extends Thread{
+    int times =0;
+    @Override
+    public void run(){
+
+        while(true){
+            System.out.println("喵喵, 我是小猫咪" + (++times) + " 线程名=" + Thread.currentThread().getName());
+        try{
+            Thread.sleep(1000);
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (times==8){
+            System.out.println("猫咪已经到齐");
+            break;
+        }
+        }
+    }
+}
