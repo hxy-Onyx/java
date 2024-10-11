@@ -1,0 +1,16 @@
+public class thread02 {
+   public static void main(String[] args) {
+        dog d =new dog();
+        Thread t1=new Thread(d);
+        Thread t2=new Thread(d);
+        t1.start();
+        t2.start();
+
+    }
+}
+class dog implements Runnable{
+    @Override
+    public void run() {
+        System.out.println("小狗在叫");
+    }
+}
