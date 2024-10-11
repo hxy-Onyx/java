@@ -1,0 +1,54 @@
+/*
+常用方法：
+setname：设置线程名称
+getname:返回线程名称
+start:执行线程
+run：线程执行的任务代码
+setpriority：更改线程的优先级
+getpriority：获取线程的优先级
+sleep：线程休眠
+interupt:中断线程，一般是唤醒处于阻塞中的线程
+ */
+public class method1 {
+    public static void main(String[] args)throws InterruptedException {
+        t t=new t();
+        t.setName("hxy");
+        t.setPriority(MIN_PRIORITY);
+//        Thread.MIN_PRIORITY: 最低优先级，值为 1。
+//        Thread.NORM_PRIORITY: 默认优先级，值为 5。
+//        Thread.MAX_PRIORITY: 最高优先级，值为 10。
+        t.start();
+        //主线程打印5 hi ,然后我就中断 子线程的休眠
+        for(int i = 0; i < 5; i++) {
+            Thread.sleep(1000);
+            System.out.println("hi " + i);
+        }
+
+        System.out.println(t.getName() + " 线程的优先级 =" + t.getPriority());//1
+
+        t.interrupt();//当执行到这里，就会中断 t线程的休眠.
+//理解：interrupt() 并不会立即终止 t 线程，它只会设置线程的中断状态为 true。
+//如果线程正在执行 sleep()、wait() 或 join()，
+// 那么调用 interrupt() 会抛出 InterruptedException 异常，
+// 中断线程的休眠或等待状态。
+//如果线程没有进入这些阻塞状态（比如只是运行普通的计算任务），
+// 调用 interrupt() 只会设置线程的中断标志，不会立刻中断线程的执行。
+
+    }
+}
+class t extends Thread{
+    public void run(){
+        while(true){
+            for (int i=0;i<100;i++){
+                System.out.println(Thread.currentThread().getName()+"运行");
+            }
+            try {
+                Thread.sleep(20000);
+            } catch (InterruptedException e) {
+               //如果该线程执行了interupt方法就会被catch
+                System.out.println(Thread.currentThread().getName() + "被 interrupt了");
+            }
+
+        }
+    }
+}
