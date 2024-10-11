@@ -1,1 +1,80 @@
+1. 条件控制语句
+if 语句： 
 
+if (condition1) {
+    // 如果 condition1 为真，执行这段代码
+} else if (condition2) {
+    // 如果 condition2 为真，执行这段代码
+} else {
+    // 如果都不为真，执行这段代码
+}
+-----------------------------------------------
+
+switch 语句： switch 用于多路选择，它根据表达式的值跳转到相应的 case 执行对应的代码块。
+
+
+switch (expression) {
+    case value1:
+        // 执行这段代码
+        break;
+    case value2:
+        // 执行这段代码
+        break;
+    default:
+        // 如果没有匹配的值，执行这段代码
+        break;
+}
+
+2. 循环控制语句
+循环控制语句让程序可以重复执行某些操作，直到条件不再满足为止。
+
+for 循环： 
+for (initialization; condition; increment/decrement) {
+    // 执行这段代码
+}
+例子：
+for (int i = 0; i < 10; i++) {
+    System.out.println(i);
+}
+
+增强型 for 循环（适用于数组和集合）： 增强型 for 循环可以简化遍历数组或集合的代码。
+for (type element : array/collection) {
+    // 执行这段代码
+}
+例子：
+int[] numbers = {1, 2, 3, 4, 5};
+for (int number : numbers) {
+    System.out.println(number);
+}
+------------------------------------
+while 循环： 只要条件为真，while 循环就会持续执行代码块。
+while (condition) {
+    // 执行这段代码
+}
+do-while 循环： 这种循环会先执行一次代码块，然后再根据条件决定是否继续循环。
+
+do {
+    // 执行这段代码
+} while (condition)；
+
+3. 跳转控制语
+break： break 通常用于在循环中强制跳出当前循环或用于 switch 语句来终止 case 的执行。
+for (int i = 0; i < 10; i++) {
+    if (i == 5) {
+        break;  // 当 i == 5 时，跳出循环
+    }
+    System.out.println(i);
+}
+-----------------
+continue： continue 会跳过当前循环迭代中的剩余代码，直接进入下一次迭代。
+for (int i = 0; i < 10; i++) {
+    if (i == 5) {
+        continue;  // 跳过 i == 5 的情况
+    }
+    System.out.println(i);
+}
+---------------------
+return： return 用于结束方法的执行并返回结果。它通常用于方法中以将值返回给调用者。
+public int add(int a, int b) {
+    return a + b;  // 返回 a 和 b 的和
+}
